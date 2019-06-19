@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Profile;
+use App\User;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
@@ -14,7 +15,8 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        //
+        $user = array('user' => Auth::user());
+        return view('Profile.profile', $user);
     }
 
     /**
@@ -35,7 +37,28 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        $profile = Profile::FindOrFail($user->id);
+        if ($request->hasFile('avatar')) {
+
+            if( $profile->avatar == 'default.jpg') {
+                $avatar = $request->file('avatar');
+                $filename = time() . '.' . $avatar->getClientOriginalExtension();
+                Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
+                $profile->avatar = $filename;
+                $profile->save();
+            }else{
+                $image = public_path('/uploads/avatars/' . $profile->avatar);
+                File::delete($image);
+                $avatar = $request->file('avatar');
+                $filename = time() . '.' . $avatar->getClientOriginalExtension();
+                Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
+                $profile->avatar = $filename;
+                $profile->save();
+            }
+        }
+
+        return redirect('Profile.profile');
     }
 
     /**
@@ -57,7 +80,8 @@ class ProfileController extends Controller
      */
     public function edit(Profile $profile)
     {
-        //
+        $profile = Profile::FindOrFail($id);
+        return view('Profile.edit',  compact('profile'));
     }
 
     /**
@@ -67,9 +91,25 @@ class ProfileController extends Controller
      * @param  \App\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Profile $profile)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'firstname' => ['required'],
+            'lastname' => ['required'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $profile = Profile::find($id);
+        $user = User::Find($profile->user_id);
+        $user->name = $request->get('name');
+        $user->save();
+        $profile->first_name = $request->get('firstname');
+        $profile->last_name = $request->get('lastname');
+        $profile->email = $request->get('email');
+
+        $profile->save();
+        return redirect('/profile');
     }
 
     /**
