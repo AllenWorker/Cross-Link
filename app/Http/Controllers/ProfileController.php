@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Profile;
 use App\User;
 use Illuminate\Http\Request;
+use Auth;
 
 class ProfileController extends Controller
 {
@@ -15,8 +16,14 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $user = array('user' => Auth::user());
-        return view('Profile.profile', $user);
+
+        $user = auth()->user();
+
+        return view('pages.profile', compact('user'));
+
+//        $user = array('user' => Auth::user());
+//        // dd( $user->profile()->avatar);
+//        return view('pages.profile', $user);
     }
 
     /**
@@ -39,10 +46,10 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $profile = Profile::FindOrFail($user->id);
-        if ($request->hasFile('avatar')) {
+        if ($request->hasFile('avatars')) {
 
             if( $profile->avatar == 'default.jpg') {
-                $avatar = $request->file('avatar');
+                $avatar = $request->file('avatars');
                 $filename = time() . '.' . $avatar->getClientOriginalExtension();
                 Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
                 $profile->avatar = $filename;
@@ -50,7 +57,7 @@ class ProfileController extends Controller
             }else{
                 $image = public_path('/uploads/avatars/' . $profile->avatar);
                 File::delete($image);
-                $avatar = $request->file('avatar');
+                $avatar = $request->file('avatars');
                 $filename = time() . '.' . $avatar->getClientOriginalExtension();
                 Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
                 $profile->avatar = $filename;
@@ -80,7 +87,7 @@ class ProfileController extends Controller
      */
     public function edit(Profile $profile)
     {
-        $profile = Profile::FindOrFail($id);
+        $profile->id;
         return view('Profile.edit',  compact('profile'));
     }
 
@@ -94,9 +101,6 @@ class ProfileController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'firstname' => ['required'],
-            'lastname' => ['required'],
-            'email' => ['required', 'string', 'email', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
         ]);
 
@@ -104,9 +108,6 @@ class ProfileController extends Controller
         $user = User::Find($profile->user_id);
         $user->name = $request->get('name');
         $user->save();
-        $profile->first_name = $request->get('firstname');
-        $profile->last_name = $request->get('lastname');
-        $profile->email = $request->get('email');
 
         $profile->save();
         return redirect('/profile');

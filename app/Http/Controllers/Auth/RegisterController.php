@@ -71,9 +71,6 @@ class RegisterController extends Controller
         ]);
 
         $profile = Profile::create([
-            'email' => $data['email'],
-            'first_name' => $data['FirstName'],
-            'last_name' =>$data['LastName'],
             'user_id' => $user->id,
         ]);
 

@@ -15,8 +15,7 @@ class CreateProfilesTable extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('profile_pic')->default('default.jpg');
-            $table->string('email');
+            $table->string('avatar')->default('default.png');
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });

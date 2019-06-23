@@ -13,11 +13,11 @@ class UsersSeeder extends Seeder
     {
         DB::table('users')->insert([
             'name' => 'Admin',
+            'email' => 'admin@fake.com',
             'password' => bcrypt('ItsPassword!'),
         ]);
 
         DB::table('profiles')->insert([
-            'email' => 'admin@fake.com',
             'user_id' => 1,
         ]);
     }
