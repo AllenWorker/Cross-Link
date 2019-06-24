@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\profile;
 use App\SocialLink;
 use Illuminate\Http\Request;
+use Auth;
 
 class SocialLinkController extends Controller
 {

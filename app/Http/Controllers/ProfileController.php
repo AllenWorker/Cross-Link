@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Profile;
 use App\User;
 use Illuminate\Http\Request;
+use Image;
 use Auth;
+use File;
 
 class ProfileController extends Controller
 {
@@ -19,7 +21,7 @@ class ProfileController extends Controller
 
         $user = auth()->user();
 
-        return view('pages.profile', compact('user'));
+        return view('profile.index', compact('user'));
 
 //        $user = array('user' => Auth::user());
 //        // dd( $user->profile()->avatar);
@@ -46,26 +48,19 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $profile = Profile::FindOrFail($user->id);
-        if ($request->hasFile('avatars')) {
-
-            if( $profile->avatar == 'default.jpg') {
-                $avatar = $request->file('avatars');
-                $filename = time() . '.' . $avatar->getClientOriginalExtension();
-                Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
-                $profile->avatar = $filename;
-                $profile->save();
-            }else{
-                $image = public_path('/uploads/avatars/' . $profile->avatar);
+        if ($request->hasFile('avatar')) {
+            if( $profile->avatar != 'default.png')
+            {
+                $image = public_path('/upload/avatars/' . $profile->avatar);
                 File::delete($image);
-                $avatar = $request->file('avatars');
-                $filename = time() . '.' . $avatar->getClientOriginalExtension();
-                Image::make($avatar)->resize(300, 300)->save(public_path('/uploads/avatars/' . $filename));
-                $profile->avatar = $filename;
-                $profile->save();
             }
+            $avatar = $request->file('avatar');
+            $filename = time() . '.' . $avatar->getClientOriginalExtension();
+            Image::make($avatar)->resize(300, 300)->save(public_path('/upload/avatars/' . $filename));
+            $profile->avatar = $filename;
+            $profile->save();
         }
-
-        return redirect('Profile.profile');
+        return redirect('/profile');
     }
 
     /**
