@@ -10,7 +10,7 @@
                     @csrf
                     <label for="">Update Profile Image </label>
                     <input type="file" name="avatar">
-                    <input type="submit" class="pull-right btn btn-sm btn-primary">
+                    <input type="submit" class="pull-right btn btn-sm btn-primary" value="Upload Image">
                 </form>
 
             </div>
