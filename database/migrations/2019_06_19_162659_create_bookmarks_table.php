@@ -15,6 +15,12 @@ class CreateBookmarksTable extends Migration
     {
         Schema::create('bookmarks', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name', '255');
+            $table->string('link', '512');
+            $table->string('description', '128');
+            $table->boolean('public')->default(false);
+            $table->string('icon')->default('default.png');;
+            $table->integer('user_id');
             $table->timestamps();
         });
     }
