@@ -15,7 +15,9 @@ class BookmarkController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $bookmarks = Bookmark::Where('user_id', $user->id)->orWhere('public', true)->paginate(15);
+        return view('bookmark.index', compact('bookmarks'));
     }
 
     /**
@@ -64,7 +66,7 @@ class BookmarkController extends Controller
      */
     public function show(Bookmark $bookmark)
     {
-        //
+        return view('bookmark.show', compact('bookmark'));
     }
 
     /**
