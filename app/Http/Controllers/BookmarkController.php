@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bookmark;
 use Illuminate\Http\Request;
+use Auth;
 
 class BookmarkController extends Controller
 {
@@ -24,7 +25,7 @@ class BookmarkController extends Controller
      */
     public function create()
     {
-        //
+        return view('bookmark.create');
     }
 
     /**
@@ -35,7 +36,24 @@ class BookmarkController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        $request->validate([
+            'name' => ['required', 'max:255'],
+            'link' => ['required', 'max:512'],
+            'description' => ['required','max:128'],
+        ]);
+        $request->has('public')?$isPublic=true:$isPublic=false;
+        $bookmark = Bookmark::Create([
+            'user_id' => $user->id,
+            'name' => $request->input('name'),
+            'link' => $request->input('link'),
+            'description' => $request->input('description'),
+            'public' => $isPublic,
+        ]);
+
+        $tags = explode(',', $request->input('tag'));
+        $bookmark->retag($tags);
+        return redirect('/profile');
     }
 
     /**
@@ -57,7 +75,8 @@ class BookmarkController extends Controller
      */
     public function edit(Bookmark $bookmark)
     {
-        //
+        abort_if($bookmark->user_id !== auth()->id(), 403);
+        return view('bookmark.edit',  compact('bookmark'));
     }
 
     /**
@@ -69,7 +88,22 @@ class BookmarkController extends Controller
      */
     public function update(Request $request, Bookmark $bookmark)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'max:255'],
+            'link' => ['required', 'max:512'],
+            'description' => ['required', 'max:128'],
+        ]);
+        $request->has('public')?$isPublic=true:$isPublic=false;
+        $bookmark ->update([
+            'name' => $request->input('name'),
+            'link' => $request->input('link'),
+            'description' => $request->input('description'),
+            'public' => $isPublic,
+        ]);
+
+        $tags = explode(',', $request->input('tag'));
+        $bookmark->retag($tags);
+        return redirect('/profile');
     }
 
     /**
@@ -80,6 +114,8 @@ class BookmarkController extends Controller
      */
     public function destroy(Bookmark $bookmark)
     {
-        //
+        $bookmark->detag();
+        $bookmark->delete();
+        return redirect('/profile');
     }
 }

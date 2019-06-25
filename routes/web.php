@@ -19,4 +19,5 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::resource('profile', 'ProfileController')->middleware(['auth', 'role:Admin|User']);;
+Route::resource('profile', 'ProfileController')->middleware(['auth', 'role:Admin|User']);
+Route::resource('bookmark', 'BookmarkController')->middleware(['auth', 'role:Admin|User']);

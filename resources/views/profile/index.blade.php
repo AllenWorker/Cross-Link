@@ -8,6 +8,40 @@
                 <h2>{{ $user->profile->nickname }}'s Profile</h2>
                 <a href="profile/{{$user->profile->id}}/edit" class="pull-right btn btn-sm btn-primary">Edit</a>
             </div>
+            <article>
+                <p>{{$user->profile->description}}</p>
+            </article>
+            <div>
+                <a href="bookmark/create" class="pull-right btn btn-sm btn-primary">Add Bookmark</a>
+            </div>
+            <div class="col-12">
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Link</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    @foreach($user->bookmark as $bookmark)
+                        <tr>
+                            <td><p>{{ $bookmark->name }}</p></td>
+                            <td><a href="{{ $bookmark->link }}">{{ $bookmark->link }}</a></td>
+                            <td><p>{{ $bookmark->description }}</p></td>
+                            <td><p>{{ $bookmark->public?'Public':'Private' }}</p></td>
+                            <td><a href="bookmark/{{$bookmark->id}}/edit" class="btn btn-sm btn-info">Edit</a></td>
+                            <td>
+                                <form action="{{route('bookmark.destroy',$bookmark->id)}}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger float-right">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
         </div>
     </div>
 @endsection
