@@ -94,12 +94,17 @@ class ProfileController extends Controller
      * @param  \App\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function update(Profile $profile)
+    public function update(Request $request, $id)
     {
+        $profile = Profile::FindOrFail($id);
         abort_if($profile->user_id !== auth()->id(), 403);
-        dd($profile->all());
-        $profile->update(request(['nickname','description']));
-
+        $request->validate([
+            'nickname' => ['string', 'max:64'],
+            'description' => ['string', 'max:256'],
+        ]);
+        if($request->filled('nickname')){$profile->nickname = $request->get('nickname');}
+        if($request->filled('description')){$profile->description = $request->get('description');}
+        $profile->save();
         return redirect('/profile');
     }
 
