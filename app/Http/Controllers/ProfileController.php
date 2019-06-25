@@ -60,6 +60,7 @@ class ProfileController extends Controller
             $profile->avatar = $filename;
             $profile->save();
         }
+
         return redirect('/profile');
     }
 
@@ -82,8 +83,8 @@ class ProfileController extends Controller
      */
     public function edit(Profile $profile)
     {
-        $profile->id;
-        return view('Profile.edit',  compact('profile'));
+        abort_if($profile->user_id !== auth()->id(), 403);
+        return view('profile.edit',  compact('profile'));
     }
 
     /**
@@ -93,18 +94,12 @@ class ProfileController extends Controller
      * @param  \App\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Profile $profile)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+        abort_if($profile->user_id !== auth()->id(), 403);
+        dd($profile->all());
+        $profile->update(request(['nickname','description']));
 
-        $profile = Profile::find($id);
-        $user = User::Find($profile->user_id);
-        $user->name = $request->get('name');
-        $user->save();
-
-        $profile->save();
         return redirect('/profile');
     }
 
