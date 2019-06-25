@@ -12,5 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.index');
 });
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::resource('profile', 'ProfileController')->middleware(['auth', 'role:Admin|User']);
+Route::resource('bookmark', 'BookmarkController')->middleware(['auth', 'role:Admin|User']);
+Route::resource('social', 'SocialLinkController')->middleware(['auth', 'role:Admin|User']);
