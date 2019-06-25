@@ -16,10 +16,11 @@ class SocialLinkController extends Controller
      */
     public function index()
     {
+
         $user = Auth::user();
         //  dd($user->id);
         $profile = Profile::FindOrFail($user->id);
-        return view('SocialMedia.index', compact('profile'));
+        return view('social.index', compact('profile'));
     }
 
     /**
@@ -40,20 +41,22 @@ class SocialLinkController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = request()->validate([
-            'name' => ['required'],
+
+        $request->validate([
+            'link_name' => ['required'],
             'url' => ['required'],
         ]);
+//        dd($request);
         $user = Auth::user();
         $profile = Profile::FindOrFail($user->id);
 
         SocialLink::create([
-            'name' => $request->input('name'),
+            'link_name' => $request->input('link_name'),
             'url' => $request->input('url'),
             'profile_id' => $profile->id,
         ]);
 
-        return view('SocialMedia.index', compact('profile'));
+        return redirect('/social');
     }
 
     /**
@@ -96,13 +99,12 @@ class SocialLinkController extends Controller
      * @param  \App\SocialLink  $socialLink
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SocialLink $socialLink)
+    public function destroy($id)
     {
-//        $socialmedia = SocialLink::FindOrFail($id);
-//        $socialmedia->delete();
-//        $user = Auth::user();
-//        //  dd($user->id);
-//        $profile = Profile::FindOrFail($user->id);
-//        return view('SocialMedia.index', compact('profile'));
+//        dd($socialLink);
+//        $socialLink->delete();
+        $socialLink = SocialLink::FindOrFail($id);
+        $socialLink->delete();
+        return redirect('/social');
     }
 }
