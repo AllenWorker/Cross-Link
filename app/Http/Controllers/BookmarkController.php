@@ -118,6 +118,13 @@ class BookmarkController extends Controller
         return redirect('/profile');
     }
 
+    public function search(Request $request)
+    {
+        $key = $request->input('key');
+        $bookmarks = Bookmark::where('name', 'LIKE', '%' . $key . '%')->paginate(15);
+        return view('bookmark.index', compact('bookmarks'));
+    }
+
     /**
      * Remove the specified resource from storage.
      *

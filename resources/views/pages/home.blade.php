@@ -13,8 +13,18 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    Welcome to Cross-Link!
+                    @hasanyrole('UserAdmin|Admin')
+                        <p>Hello Admin<p>
+                    @else
+                        @role('Ban')
+                            <p>Sorry, your Account is baned due to suspicious activities </p>
+                            <p>Please contact Admin for further information.</p>
+                        @else
+                            <p> Hello User!</p>
 
-                    You are logged in!
+                        @endrole
+                    @endrole
                 </div>
             </div>
         </div>

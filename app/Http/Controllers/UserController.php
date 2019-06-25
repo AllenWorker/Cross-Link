@@ -16,7 +16,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware((['auth', 'role:Admin|UserAdmin']))->except(['profile','index','show']);
+        $this->middleware((['auth', 'role:Admin|UserAdmin']))->except(['profile','index','show','search']);
     }
     /**
      * Display a listing of the resource.
@@ -116,6 +116,16 @@ class UserController extends Controller
         }
         $user->save();
         return redirect('/user');
+    }
+
+    public function search(Request $request)
+    {
+        $key = $request->input('key');
+        $users = User::where('name', 'LIKE', '%' . $key . '%')->paginate(15);
+        $roles = Role::get();
+        return view(
+            'user.index', compact('users', 'roles')
+        );
     }
 
     /**

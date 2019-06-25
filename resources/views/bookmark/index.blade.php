@@ -7,10 +7,10 @@
                 <div class="card">
                     <div class="card-header">BookMarks
                         <div class="float-right list-inline nav">
-                            <form action="bookmark/search" method="POST" role="search">
+                            <form action="{{url('bookmark/search')}}" method="POST" role="search">
                                 @csrf
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="q"
+                                    <input type="text" class="form-control" name="key"
                                            placeholder="Search BookMarks">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </div>
