@@ -85,7 +85,7 @@ class BookmarkController extends Controller
     public function edit(Bookmark $bookmark)
     {
         $user = Auth::user();
-        abort_if($bookmark->user_id !== $user->id||!$user->hasRole('Admin'), 403);
+        abort_unless($bookmark->user_id == $user->id||$user->hasRole('Admin'), 403);
         return view('bookmark.edit',  compact('bookmark'));
     }
 
@@ -99,7 +99,7 @@ class BookmarkController extends Controller
     public function update(Request $request, Bookmark $bookmark)
     {
         $user = Auth::user();
-        abort_if($bookmark->user_id !== $user->id||!$user->hasRole('Admin'), 403);
+        abort_unless($bookmark->user_id == $user->id||$user->hasRole('Admin'), 403);
         $request->validate([
             'name' => ['required', 'max:255'],
             'link' => ['required', 'max:512'],
@@ -134,7 +134,7 @@ class BookmarkController extends Controller
     public function destroy(Bookmark $bookmark)
     {
         $user = Auth::user();
-        abort_if($bookmark->user_id !== $user->id||!$user->hasRole('Admin'), 403);
+        abort_unless($bookmark->user_id == $user->id||$user->hasRole('Admin'), 403);
         $bookmark->detag();
         $bookmark->delete();
         return redirect('/profile');
