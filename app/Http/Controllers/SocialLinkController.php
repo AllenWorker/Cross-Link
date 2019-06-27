@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\profile;
+use App\Profile;
 use App\SocialLink;
 use Illuminate\Http\Request;
 use Auth;
