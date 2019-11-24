@@ -30,7 +30,7 @@
                                     <tr>
                                         <td>{{$bookmark->id}}</td>
                                         <td>{{$bookmark->name}}</td>
-                                        <td>{{$bookmark->public?'Public':'Private'}}c</td>
+                                        <td>{{$bookmark->public?'Public':'Private'}}</td>
                                         <td>{{$bookmark->user->name}}</td>
                                         <td>
                                             <a href="/bookmark/{{$bookmark->id}}">View Details</a>

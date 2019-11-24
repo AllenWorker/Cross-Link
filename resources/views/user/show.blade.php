@@ -9,9 +9,11 @@
                         @if($user->name == 'Admin')
 
                         @else
+                            @role('Admin|UserAdmin')
                             <div class="float-right list-inline nav">
                                 <a href="/user/{{$user->id}}/edit" class="nav-link ">Edit</a>
                             </div>
+                            @endrole
                         @endif
                     </div>
                     <div class="card-body">

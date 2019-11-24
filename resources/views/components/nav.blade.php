@@ -11,14 +11,14 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 <li> <a class="nav-link" href="{{ url('/home') }}">Home</a></li>
-                @hasanyrole('UserAdmin|Admin|User')
+                @hasanyrole('UserAdmin|Admin')
                 <li> <a class="nav-link" href="{{ url('/user') }}">Users List</a></li>
                 @endrole
                 @role('Admin')
                 <li> <a class="nav-link" href="{{ url('/bookmark') }}">BookMarks</a></li>
                 <li> <a class="nav-link" href="{{ url('/tag') }}">Tags</a></li>
                 @endrole
-                @role('User')
+                @role('User|UserAdmin')
                 <li> <a class="nav-link" href="{{ url('/bookmark') }}">BookMarks</a></li>
                 @endrole
             </ul>
@@ -36,26 +36,25 @@
                         </li>
                     @endif
                 @else
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            <img src="/upload/avatars/{{Auth::user()->profile->avatar}}" style="width:30px; height:30px;">
-                            {{ Auth::user()->name }} <span class="caret"></span>
-                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/profile') }}">
+                            @role('User')
+                            @if (file_exists(public_path().'/upload/avatars/'.Auth::user()->profile->avatar))
+                                <img src="/upload/avatars/{{Auth::user()->profile->avatar}}" style="width:30px; height:30px;">
+                                @else
+                                <img src="/upload/avatars/default.png" style="width:30px; height:30px;">
+                            @endif
 
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ url('/profile') }}">
-                                Profile
-                            </a>
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                               onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </div>
+                            @endrole
+                            {{ Auth::user()->name }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a class="nav-link" href="{{ route('logout') }}"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}</a>
                     </li>
                 @endguest
             </ul>
